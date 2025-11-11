@@ -1,0 +1,17 @@
+from mergexp import *
+
+# create the network topology object
+net = Network('lan')
+
+ceo_node = net.node('ceo')
+cto_node = net.node('cto')
+cfo_node = net.node('cfo')
+router = net.node('router')
+attacker_node = net.node('attacker')
+net.connect([ceo_node,router])
+net.connect([cto_node,router])
+net.connect([cfo_node,router])
+net.connect([attacker_node,router])
+
+# Execute the topology
+experiment(net)

@@ -1,6 +1,6 @@
 ---
-- name: Start Traffic Capture on CTO node
-  hosts: cto
+- name: Start Traffic Capture on router node
+  hosts: router
   become: yes
   tasks:
     - name: Install tcpdump
@@ -10,6 +10,6 @@
         update_cache: yes
 
     - name: Start tcpdump in the background
-      shell: "nohup tcpdump -i any -w /tmp/cto_traffic.pcap > /dev/null 2>&1 & echo $! > /tmp/tcpdump.pid"
+      shell: "nohup tcpdump -i any -w /tmp/router_traffic.pcap > /dev/null 2>&1 & echo $! > /tmp/tcpdump.pid"
       args:
         creates: /tmp/tcpdump.pid # Prevents starting if pid file already exists
