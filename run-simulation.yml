@@ -1,0 +1,52 @@
+---
+- name: Simulate CEO Browsing
+  hosts: ceo
+  become: yes
+  tasks:
+    - name: Run web browsing bot for CEO
+      docker_container:
+        name: ceo_bot
+        image: ariscahyadi/web-browsing-bot:latest
+        command: 'python -u ./main.py "https://www.wsj.com,https://www.forbes.com,https://www.bloomberg.com,https://www.linkedin.com" 0'
+        detach: yes
+        auto_remove: yes
+
+- name: Simulate CTO Browsing
+  hosts: cto
+  become: yes
+  tasks:
+    - name: Run web browsing bot for CTO
+      docker_container:
+        name: cto_bot
+        image: ariscahyadi/web-browsing-bot:latest
+        command: 'python -u ./main.py "https://news.ycombinator.com,https://www.techcrunch.com,https://stackoverflow.com,https://github.com" 0'
+        detach: yes
+        auto_remove: yes
+
+- name: Simulate CFO Browsing
+  hosts: cfo
+  become: yes
+  tasks:
+    - name: Run web browsing bot for CFO
+      docker_container:
+        name: cfo_bot
+        image: ariscahyadi/web-browsing-bot:latest
+        command: 'python -u ./main.py "https://www.ft.com,https://www.reuters.com,https://www.investopedia.com,https://quickbooks.intuit.com" 0'
+        detach: yes
+        auto_remove: yes
+
+- name: Simulate Attacker Action
+  hosts: attacker
+  become: yes
+  tasks:
+    - name: Run nmap scan from attacker machine
+      docker_container:
+        name: attacker_scan
+        image: alpine/nmap
+        command: >
+          nmap -sP 
+          {{ hostvars['ceo']['ansible_default_ipv4']['address'] }}
+          {{ hostvars['cto']['ansible_default_ipv4']['address'] }}
+          {{ hostvars['cfo']['ansible_default_ipv4']['address'] }}
+        detach: no # We want to see the output of this one
+        auto_remove: yes

@@ -1,0 +1,25 @@
+---
+- name: Stop Traffic Capture and Download Data
+  hosts: cto
+  become: yes
+  tasks:
+    - name: Get PID of tcpdump process
+      command: "cat /tmp/tcpdump.pid"
+      register: tcpdump_pid
+
+    - name: Stop the tcpdump process
+      command: "kill {{ tcpdump_pid.stdout }}"
+      
+    - name: Fetch the capture file
+      fetch:
+        src: /tmp/cto_traffic.pcap
+        dest: ./cto_traffic.pcap # Downloads to the directory on the XDC where you run ansible
+        flat: yes
+
+    - name: Clean up remote files
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /tmp/cto_traffic.pcap
+        - /tmp/tcpdump.pid
