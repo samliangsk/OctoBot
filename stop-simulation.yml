@@ -1,0 +1,9 @@
+---
+- name: Stop All Browsing Bots
+  hosts: ceo, cto, cfo
+  become: yes
+  tasks:
+    - name: Stop and remove the browsing bot containers
+      community.docker.docker_container:
+        name: "{{ inventory_hostname }}_bot"
+        state: absent
